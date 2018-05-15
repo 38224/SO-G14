@@ -35,7 +35,7 @@ typedef struct _UTHREAD_CONTEXT {
 	ULONGLONG RDI;
 	ULONGLONG RBX;
 	ULONGLONG RBP;
-	VOID (*RetAddr)();
+	VOID(*RetAddr)();
 } UTHREAD_CONTEXT, *PUTHREAD_CONTEXT;
 #else
 typedef struct _UTHREAD_CONTEXT {
@@ -43,7 +43,7 @@ typedef struct _UTHREAD_CONTEXT {
 	ULONG ESI;
 	ULONG EBX;
 	ULONG EBP;
-	VOID (*RetAddr)();
+	VOID(*RetAddr)();
 } UTHREAD_CONTEXT, *PUTHREAD_CONTEXT;
 #endif
 
@@ -61,7 +61,6 @@ typedef struct _UTHREAD {
 	PUCHAR           Stack;
 	PUCHAR			 Name;
 	enum { Running, Ready = 0, Blocked } State;
-
 } UTHREAD, *PUTHREAD;
 
 //

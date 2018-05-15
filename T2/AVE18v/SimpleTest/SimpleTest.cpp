@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "usynch.h"
 #include "List.h"
+#include <iostream>
+#include <string>
 
 /////////////////////////////////////////////
 //
@@ -33,37 +35,37 @@
 ULONG Test1_Count;
 
 
-VOID Test1_Thread (UT_ARGUMENT Argument) {
+VOID Test1_Thread(UT_ARGUMENT Argument) {
 	UCHAR Char;
 	ULONG Index;
-	Char = (UCHAR) Argument;	
+	Char = (UCHAR)Argument;
 
 	for (Index = 0; Index < 10000; ++Index) {
-	    putchar(Char);
-		
-	    if ((rand() % 4) == 0) {
-		    UtYield();
-	    }
-    }
+		putchar(Char);
+
+		if ((rand() % 4) == 0) {
+			UtYield();
+		}
+	}
 
 	++Test1_Count;
-	 
+
 }
 
-VOID Test1 ()  {
+VOID Test1() {
 	ULONG Index;
 
-	
-	Test1_Count = 0; 
+
+	Test1_Count = 0;
 
 	printf("\n :: Test 1 - BEGIN :: \n\n");
 
 	for (Index = 0; Index < MAX_THREADS; ++Index) {
-		UtCreate(Test1_Thread, (UT_ARGUMENT) ('0' + Index),22,"thread 1");
-	}   
+		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), 16 * 4096, (char*)std::to_string(Index).c_str());
+	}
 
 	UtRun();
-	UtYield();
+
 	_ASSERTE(Test1_Count == MAX_THREADS);
 	printf("\n\n :: Test 1 - END :: \n");
 }
@@ -71,13 +73,13 @@ VOID Test1 ()  {
 
 
 
-int main () {
+int main() {
 	UtInit();
- 
+
 	Test1();
 	getchar();
-	
-	 
+
+
 	UtEnd();
 	return 0;
 }
