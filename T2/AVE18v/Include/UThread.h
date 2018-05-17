@@ -89,6 +89,9 @@ VOID UtDeactivate ();
 UTHREAD_API
 VOID UtActivate (HANDLE ThreadHandle);
 
+UTHREAD_API
+char* UtDump();
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

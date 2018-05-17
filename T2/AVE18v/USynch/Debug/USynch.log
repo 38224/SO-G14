@@ -1,1 +1,5 @@
-﻿  USynch.vcxproj -> C:\Users\megri\Desktop\SOREP\SO-G14\T2\AVE18v\Debug\USynch.dll
+﻿  Event.c
+  Mutex.c
+  Semaphore.c
+  Generating Code...
+  USynch.vcxproj -> C:\Users\megri\Desktop\SOREP\SO-G14\T2\AVE18v\Debug\USynch.dll

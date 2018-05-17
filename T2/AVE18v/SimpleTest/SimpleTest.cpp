@@ -45,6 +45,9 @@ VOID Test1_Thread(UT_ARGUMENT Argument) {
 
 		if ((rand() % 4) == 0) {
 			UtYield();
+			printf("\n \n \n ");
+			printf(UtDump());
+			printf("\n \n \n ");
 		}
 	}
 

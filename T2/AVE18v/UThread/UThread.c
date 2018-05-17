@@ -230,6 +230,11 @@ VOID UtActivate(HANDLE ThreadHandle) {
 	InsertTailList(&ReadyQueue, &((PUTHREAD)ThreadHandle)->Link);
 }
 
+char* UtDump() {
+
+	return RunningThread->Name;
+}
+
 ///////////////////////////////////////
 //
 // Definition of internal operations.
