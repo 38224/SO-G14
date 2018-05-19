@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "usynch.h"
 #include "List.h"
-#include <iostream>
-#include <string>
 
 /////////////////////////////////////////////
 //
@@ -45,9 +43,6 @@ VOID Test1_Thread(UT_ARGUMENT Argument) {
 
 		if ((rand() % 4) == 0) {
 			UtYield();
-			printf("\n \n \n ");
-			printf(UtDump());
-			printf("\n \n \n ");
 		}
 	}
 
@@ -61,11 +56,15 @@ VOID Test1() {
 
 	Test1_Count = 0;
 
-	printf("\n :: Test 1 - BEGIN :: \n\n");
+ 
 
+	printf("\n :: Test 1 - BEGIN :: \n\n");
+	char str[10] = "thread_";
 	for (Index = 0; Index < MAX_THREADS; ++Index) {
-		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), 16 * 4096, (char*)std::to_string(Index).c_str());
+		itoa(Index, str + 7, 10);
+		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), 16 * 4096, str);
 	}
+
 
 	UtRun();
 

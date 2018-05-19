@@ -76,6 +76,10 @@ VOID UtYield ();
 UTHREAD_API
 HANDLE UtSelf ();
 
+UTHREAD_API
+int utGetStackSize();
+
+  
 //
 // Halts the execution of the current user thread.
 //
@@ -90,7 +94,7 @@ UTHREAD_API
 VOID UtActivate (HANDLE ThreadHandle);
 
 UTHREAD_API
-char* UtDump();
+VOID UtDump ();
 
 #ifdef __cplusplus
 } // extern "C"

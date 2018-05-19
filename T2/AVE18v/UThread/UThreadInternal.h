@@ -59,8 +59,8 @@ typedef struct _UTHREAD {
 	UT_FUNCTION      Function;
 	UT_ARGUMENT      Argument;
 	PUCHAR           Stack;
-	PUCHAR			 Name;
-	enum { Running, Ready = 0, Blocked } State;
+	CHAR			 Name[256];
+	enum { Running = 2, Ready = 1, Blocked = 0 } State;
 } UTHREAD, *PUTHREAD;
 
 //

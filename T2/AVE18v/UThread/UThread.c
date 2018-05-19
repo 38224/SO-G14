@@ -10,6 +10,8 @@
 //   Carlos Martins, João Trindade, Duarte Nunes, Jorge Martins
 // 
 
+#include <malloc.h>
+#include <stdio.h>
 #include <crtdbg.h>
 #include "UThreadInternal.h"
 
@@ -23,6 +25,9 @@
 //
 static
 ULONG NumberOfThreads;
+
+static
+LIST_ENTRY ThreadList;
 
 //
 // The sentinel of the circular list linking the user threads that are
@@ -130,6 +135,7 @@ VOID Schedule() {
 //
 VOID UtInit() {
 	InitializeListHead(&ReadyQueue);
+	InitializeListHead(&ThreadList);
 }
 
 //
@@ -211,6 +217,17 @@ VOID UtYield() {
 HANDLE UtSelf() {
 	return (HANDLE)RunningThread;
 }
+ 
+int utGetStackSize() {
+	int count = 0;
+	PUTHREAD t = (PUTHREAD)UtSelf();
+	while(*(t->Stack + count) != '\0'){
+		count++; 
+	}
+	return count;
+ 
+}
+
 
 //
 // Halts the execution of the current user thread.
@@ -229,10 +246,13 @@ VOID UtActivate(HANDLE ThreadHandle) {
 	((PUTHREAD)ThreadHandle)->State = Ready;
 	InsertTailList(&ReadyQueue, &((PUTHREAD)ThreadHandle)->Link);
 }
-
-char* UtDump() {
-
-	return RunningThread->Name;
+//Realize a função UtDump, útil para debug, que mostra no standard output a lista das threads existentes,
+//apresentando o seu handle, o nome, o estado e a taxa de ocupação do stack.   
+VOID UtDump() {
+	printf("\n \n \n  RunningThread info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0) :\n");
+	printf("%d  %s    %d  \n	\n",(HANDLE)RunningThread,RunningThread->Name , RunningThread->State);
+	LIST_ENTRY first = ReadyQueue;
+	  
 }
 
 ///////////////////////////////////////
@@ -269,20 +289,21 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 	//
 	Thread = (PUTHREAD)malloc(sizeof(UTHREAD));
 	Thread->Stack = (PUCHAR)malloc(stackSize);
-	Thread->Name = (PUCHAR)malloc(NAME_SIZE);
+ 
 	_ASSERTE(Thread != NULL && Thread->Stack != NULL);
 
 	//
 	// Zero the stack for emotional confort.
 	//
-	memset(Thread->Stack, 0, stackSize);
-	memset(Thread->Name, 0, NAME_SIZE);
+	memset(Thread->Stack, 1, stackSize);
+
+	memcpy(Thread->Name, threadName, 256);
 	//
 	// Memorize Function and Argument for use in InternalStart.
 	//
 	Thread->Function = Function;
 	Thread->Argument = Argument;
-
+	 
 	//
 	// Map an UTHREAD_CONTEXT instance on the thread's stack.
 	// We'll use it to save the initial context of the thread.
@@ -383,7 +404,6 @@ VOID __fastcall ContextSwitch(PUTHREAD CurrentThread, PUTHREAD NextThread) {
 static
 VOID __fastcall CleanupThread(PUTHREAD Thread) {
 	free(Thread->Stack);
-	free(Thread->Name);
 	free(Thread);
 }
 
@@ -436,14 +456,14 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 	//
 	Thread = (PUTHREAD)malloc(sizeof(UTHREAD));
 	Thread->Stack = (PUCHAR)malloc(stackSize);
-	Thread->Name = (PUCHAR)malloc(NAME_SIZE);
+ 
 	_ASSERTE(Thread != NULL && Thread->Stack != NULL);
 
 	//
 	// Zero the stack for emotional confort.
 	//
 	memset(Thread->Stack, 0, stackSize);
-	memset(Thread->Name, 0, NAME_SIZE);
+	memcpy(Thread->Name, threadName, 256);
 	//
 	// Memorize Function and Argument for use in InternalStart.
 	//
@@ -531,7 +551,7 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 //
 VOID CleanupThread(PUTHREAD Thread) {
 	free(Thread->Stack);
-	free(Thread->Name);
+ 
 	free(Thread);
 }
 

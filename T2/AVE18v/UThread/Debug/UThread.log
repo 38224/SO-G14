@@ -1,3 +1,4 @@
 ﻿  UThread.c
-     Creating library C:\Users\megri\Desktop\SOREP\SO-G14\T2\AVE18v\Debug\UThread.lib and object C:\Users\megri\Desktop\SOREP\SO-G14\T2\AVE18v\Debug\UThread.exp
-  UThread.vcxproj -> C:\Users\megri\Desktop\SOREP\SO-G14\T2\AVE18v\Debug\UThread.dll
+c:\users\megri\desktop\t2so\so-g14\t2\ave18v\uthread\uthread.c(253): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'HANDLE'
+c:\users\megri\desktop\t2so\so-g14\t2\ave18v\uthread\uthread.c(254): warning C4101: 'first': unreferenced local variable
+  UThread.vcxproj -> C:\Users\megri\Desktop\T2SO\SO-G14\T2\AVE18v\Debug\UThread.dll
