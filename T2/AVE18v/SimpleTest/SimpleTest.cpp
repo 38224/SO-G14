@@ -59,7 +59,7 @@ VOID Test1() {
  
 
 	printf("\n :: Test 1 - BEGIN :: \n\n");
-	char str[10] = "thread_";
+	char str[12] = "thread_";
 	for (Index = 0; Index < MAX_THREADS; ++Index) {
 		itoa(Index, str + 7, 10);
 		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), 16 * 4096, str);

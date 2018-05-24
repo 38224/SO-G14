@@ -54,12 +54,12 @@ typedef struct _UTHREAD_CONTEXT {
 // saved execution context.
 //
 typedef struct _UTHREAD {
-	PUTHREAD_CONTEXT ThreadContext;
 	LIST_ENTRY       Link;
+	PUTHREAD_CONTEXT ThreadContext;
 	UT_FUNCTION      Function;
 	UT_ARGUMENT      Argument;
 	PUCHAR           Stack;
-	CHAR			 Name[256];
+	CHAR			 Name[12];
 	enum { Running = 2, Ready = 1, Blocked = 0 } State;
 } UTHREAD, *PUTHREAD;
 
@@ -67,4 +67,4 @@ typedef struct _UTHREAD {
 // The fixed stack size of a user thread.
 //
 #define STACK_SIZE (16 * 4096)
-#define NAME_SIZE (256)
+#define NAME_SIZE (12)

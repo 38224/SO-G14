@@ -25,9 +25,7 @@
 //
 static
 ULONG NumberOfThreads;
-
-static
-LIST_ENTRY ThreadList;
+ 
 
 //
 // The sentinel of the circular list linking the user threads that are
@@ -121,6 +119,7 @@ VOID Schedule() {
 	PUTHREAD NextThread;
 	NextThread = ExtractNextReadyThread();
 	NextThread->State = Running;
+	RunningThread->State = Ready;
 	ContextSwitch(RunningThread, NextThread);
 }
 
@@ -135,7 +134,7 @@ VOID Schedule() {
 //
 VOID UtInit() {
 	InitializeListHead(&ReadyQueue);
-	InitializeListHead(&ThreadList);
+ 
 }
 
 //
@@ -205,7 +204,7 @@ VOID UtExit() {
 //
 VOID UtYield() {
 	if (!IsListEmpty(&ReadyQueue)) {
-		RunningThread->State = Blocked;
+		RunningThread->State = Ready;
 		InsertTailList(&ReadyQueue, &RunningThread->Link);
 		Schedule();
 	}
@@ -233,7 +232,6 @@ int utGetStackSize() {
 // Halts the execution of the current user thread.
 //
 VOID UtDeactivate() {
-	RunningThread->State = Ready;
 	Schedule();
 }
 
@@ -250,9 +248,21 @@ VOID UtActivate(HANDLE ThreadHandle) {
 //apresentando o seu handle, o nome, o estado e a taxa de ocupação do stack.   
 VOID UtDump() {
 	printf("\n \n \n  RunningThread info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0) :\n");
-	printf("%d  %s    %d  \n	\n",(HANDLE)RunningThread,RunningThread->Name , RunningThread->State);
-	LIST_ENTRY first = ReadyQueue;
-	  
+	printf("%d  %s    %d  \n	",(HANDLE)RunningThread,RunningThread->Name , RunningThread->State);
+	
+	printf("\n \n   Ready Threads info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0) :\n");
+
+	PUTHREAD dummy = RunningThread->Link.Flink ;
+
+	PUTHREAD  stopPoint = dummy;
+
+	while (dummy->Link.Flink != stopPoint) {
+
+		printf("%d  %s    %d  \n", (HANDLE)dummy, dummy->Name, dummy->State);
+		dummy = dummy->Link.Flink;
+
+	}
+	printf("\n\n");
 }
 
 ///////////////////////////////////////
@@ -297,7 +307,7 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 	//
 	memset(Thread->Stack, 1, stackSize);
 
-	memcpy(Thread->Name, threadName, 256);
+	memcpy(Thread->Name, threadName, 12);
 	//
 	// Memorize Function and Argument for use in InternalStart.
 	//

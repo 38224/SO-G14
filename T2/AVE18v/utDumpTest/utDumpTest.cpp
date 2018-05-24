@@ -31,6 +31,7 @@
 ///////////////////////////////////////////////////////////////
 
 ULONG Test1_Count;
+int count = 0;
 
 
 VOID Test1_Thread(UT_ARGUMENT Argument) {
@@ -38,17 +39,19 @@ VOID Test1_Thread(UT_ARGUMENT Argument) {
 	ULONG Index;
 	Char = (UCHAR)Argument;
 
-	for (Index = 0; Index < 1000; ++Index) {
+	for (Index = 0; Index < 100; ++Index) {
 		putchar(Char);
 
 		if ((rand() % 100) == 0) {
-			UtYield();
+			count++;
 			UtDump();
+			UtYield();
+			
 		}
 	}
 
 	++Test1_Count;
-
+	printf("%d", count);
 }
 
 VOID Test1() {
@@ -60,7 +63,7 @@ VOID Test1() {
 
 
 	printf("\n :: Test 1 - BEGIN :: \n\n");
-	char str[10] = "thread_";
+	char str[12] = "thread_";
 	for (Index = 0; Index < MAX_THREADS; ++Index) {
 		itoa(Index, str + 7, 10);
 		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), 16 * 4096, str);
