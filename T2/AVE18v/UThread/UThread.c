@@ -307,7 +307,7 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 	//
 	memset(Thread->Stack, 1, stackSize);
 
-	memcpy(Thread->Name, threadName, 12);
+	memcpy(Thread->Name, threadName, NAME_SIZE);
 	//
 	// Memorize Function and Argument for use in InternalStart.
 	//

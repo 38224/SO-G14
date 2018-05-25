@@ -39,10 +39,10 @@ VOID Test1_Thread(UT_ARGUMENT Argument) {
 	ULONG Index;
 	Char = (UCHAR)Argument;
 
-	for (Index = 0; Index < 100; ++Index) {
+	for (Index = 0; Index < 100000; ++Index) {
 		putchar(Char);
 
-		if ((rand() % 100) == 0) {
+		if ((rand() % 1000) == 0) {
 			count++;
 			UtDump();
 			UtYield();
