@@ -77,7 +77,7 @@ UTHREAD_API
 HANDLE UtSelf ();
 
 UTHREAD_API
-int utGetStackSize();
+int utGetStackSize(HANDLE ThreadHandle);
 
   
 //
@@ -95,6 +95,12 @@ VOID UtActivate (HANDLE ThreadHandle);
 
 UTHREAD_API
 VOID UtDump ();
+
+UTHREAD_API
+int UtThreadState(HANDLE ThreadHandle);
+
+UTHREAD_API
+BOOL UtMultJoin(HANDLE handle[], int size);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <crtdbg.h>
 #include "UThreadInternal.h"
+#include "WaitBlock.h"
 
 //////////////////////////////////////
 //
@@ -109,6 +110,12 @@ PUTHREAD ExtractNextReadyThread() {
 		? MainThread
 		: CONTAINING_RECORD(RemoveHeadList(&ReadyQueue), UTHREAD, Link);
 }
+	/*
+
+	return IsListEmpty(&ReadyQueue)
+		? MainThread
+		: CONTAINING_RECORD(RemoveHeadList(&ReadyQueue), UTHREAD, Link);
+		*/
 
 //
 // Schedule a new thread to run
@@ -119,7 +126,6 @@ VOID Schedule() {
 	PUTHREAD NextThread;
 	NextThread = ExtractNextReadyThread();
 	NextThread->State = Running;
-	RunningThread->State = Ready;
 	ContextSwitch(RunningThread, NextThread);
 }
 
@@ -193,7 +199,18 @@ VOID UtRun() {
 //
 VOID UtExit() {
 	NumberOfThreads -= 1;
-	RunningThread->State = Ready;
+
+	while (!IsListEmpty(&RunningThread->JoinList)) {
+		PLIST_ENTRY curEntry = RemoveHeadList(&RunningThread->JoinList);
+		PWAIT_BLOCK waitBlock = CONTAINING_RECORD(curEntry, WAIT_BLOCK, Link);
+		PUTHREAD Thread = (PUTHREAD)waitBlock->Thread;
+		Thread->JoinCounter -= 1;
+		if (Thread->JoinCounter == 0) {
+			InsertTailList(&ReadyQueue, &Thread->Link);
+		}
+		free(waitBlock);
+	}
+ 
 	InternalExit(RunningThread, ExtractNextReadyThread());
 	_ASSERTE(!"Supposed to be here!");
 }
@@ -204,8 +221,8 @@ VOID UtExit() {
 //
 VOID UtYield() {
 	if (!IsListEmpty(&ReadyQueue)) {
-		RunningThread->State = Ready;
 		InsertTailList(&ReadyQueue, &RunningThread->Link);
+		RunningThread->State = Ready;
 		Schedule();
 	}
 }
@@ -217,12 +234,10 @@ HANDLE UtSelf() {
 	return (HANDLE)RunningThread;
 }
  
-int utGetStackSize() {
+int utGetStackSize(HANDLE ThreadHandle) {
 	int count = 0;
-	PUTHREAD t = (PUTHREAD)UtSelf();
-	while(*(t->Stack + count) != '\0'){
-		count++; 
-	}
+	PUTHREAD t = (PUTHREAD)ThreadHandle;
+	while (*(t->Stack + count++) != '\0');
 	return count;
  
 }
@@ -241,16 +256,17 @@ VOID UtDeactivate() {
 // becomes eligible to run.
 //
 VOID UtActivate(HANDLE ThreadHandle) {
-	((PUTHREAD)ThreadHandle)->State = Ready;
-	InsertTailList(&ReadyQueue, &((PUTHREAD)ThreadHandle)->Link);
+	PUTHREAD Thread = (PUTHREAD)ThreadHandle;
+	InsertTailList(&ReadyQueue, &Thread->Link);
+	Thread->State = Ready;
 }
 //Realize a função UtDump, útil para debug, que mostra no standard output a lista das threads existentes,
 //apresentando o seu handle, o nome, o estado e a taxa de ocupação do stack.   
 VOID UtDump() {
-	printf("\n \n \n  RunningThread info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0) :\n");
-	printf("%d  %s    %d  \n	",(HANDLE)RunningThread,RunningThread->Name , RunningThread->State);
+	printf("\n\n\nRUNNING THREAD info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0,STACK size) :\n");
+	printf("%d	%s	%d	%d \n\n",(HANDLE)RunningThread,RunningThread->Name , UtThreadState(RunningThread), utGetStackSize(RunningThread));
 	
-	printf("\n \n   Ready Threads info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0) :\n");
+	printf("READY THREAD info(Handle,Name,State:Running = 2, Ready = 1, Blocked = 0,STACK size) :\n");
 
 	PUTHREAD dummy = RunningThread->Link.Flink ;
 
@@ -258,25 +274,42 @@ VOID UtDump() {
 
 	while (dummy->Link.Flink != stopPoint) {
 
-		printf("%d  %s    %d  \n", (HANDLE)dummy, dummy->Name, dummy->State);
+		printf("%d	%s	%d	%d\n", (HANDLE)dummy, dummy->Name, UtThreadState(dummy), utGetStackSize(dummy));
 		dummy = dummy->Link.Flink;
 
 	}
 	printf("\n\n");
 }
 
-///////////////////////////////////////
-//
-// Definition of internal operations.
-//
+INT UtThreadState(HANDLE ThreadHandle) {
+	return ((PUTHREAD)ThreadHandle)->State;
+}
 
-//
-// The trampoline function that a user thread begins by executing, through
-// which the associated function is called.
-//
+ 
 VOID InternalStart() {
 	RunningThread->Function(RunningThread->Argument);
 	UtExit();
+}
+
+//
+// Blocks the invoking thread until the termination of all the specified
+// user threads.
+//
+BOOL UtMultJoin(HANDLE handle[], int size) {
+	for (int i = 0; i < size; ++i) {
+		if (handle[i] == UtSelf() || UtThreadState(handle[i]) == Blocked) return FALSE;
+	}
+
+	for (int i = 0; i < size; ++i) {
+		PWAIT_BLOCK waitBlock = (PWAIT_BLOCK)malloc(sizeof(WAIT_BLOCK));
+		InitializeWaitBlock(waitBlock);
+		PUTHREAD Thread = (PUTHREAD)handle[i];
+		InsertTailList(&Thread->JoinList, &waitBlock->Link);
+		RunningThread->JoinCounter += 1;
+	}
+	RunningThread->State = Blocked;
+	UtDeactivate();
+	return TRUE;
 }
 
 //
@@ -359,6 +392,9 @@ HANDLE UtCreate(UT_FUNCTION Function, UT_ARGUMENT Argument, size_t stackSize, ch
 	Thread->ThreadContext->EBP = 0x00000000;
 	Thread->ThreadContext->RetAddr = InternalStart;
 
+
+	InitializeListHead(&Thread->JoinList);
+	Thread->JoinCounter = 0;
 	//
 	// Ready the thread.
 	//

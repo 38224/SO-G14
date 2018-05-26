@@ -27,8 +27,10 @@
 
   
 
-VOID Test1_Thread(UT_ARGUMENT Argument) {
-	printf(" \n \n size: %d \n \n",utGetStackSize());
+VOID stackSizeTest(UT_ARGUMENT Argument) {
+	UCHAR Char;
+	Char = (UCHAR)Argument;
+	printf("\n Thread %c - size : %d  \n", Char,utGetStackSize(UtSelf()));
 	UtExit();
 }
 
@@ -39,17 +41,17 @@ VOID Test1() {
 
  
 
-	printf("\n :: Test 2 - BEGIN :: \n\n");
+	printf("\n :: stackSizeTest - BEGIN :: \n\n");
 	char str[12] = "thread_";
 	for (Index = 1; Index <= MAX_THREADS; ++Index) {
 		itoa(Index, str + 7, 10);
-		UtCreate(Test1_Thread, (UT_ARGUMENT)('0' + Index), Index * 16 * 4096, str);
+		UtCreate(stackSizeTest, (UT_ARGUMENT)('0' + Index), Index * 16 * 4096, str);
 	}
 
-	printf("Stack size of all threads:");
+	printf("Stack size of all threads(index*16*4096 filled stack):\n");
 	UtRun();
 	 
-	printf("\n\n :: Test 2 - END :: \n");
+	printf("\n\n :: stackSizeTest - END :: \n");
 }
 
 

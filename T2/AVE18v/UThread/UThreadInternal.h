@@ -57,10 +57,12 @@ typedef struct _UTHREAD {
 	LIST_ENTRY       Link;
 	PUTHREAD_CONTEXT ThreadContext;
 	UT_FUNCTION      Function;
+	LIST_ENTRY		 JoinList;
+	INT 			 JoinCounter;
 	UT_ARGUMENT      Argument;
-	PUCHAR           Stack;
 	CHAR			 Name[12];
 	enum { Running = 2, Ready = 1, Blocked = 0 } State;
+	PUCHAR           Stack;
 } UTHREAD, *PUTHREAD;
 
 //

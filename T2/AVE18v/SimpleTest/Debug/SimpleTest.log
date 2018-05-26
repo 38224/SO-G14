@@ -1,5 +1,6 @@
-﻿  SimpleTest.cpp
-c:\users\megri\desktop\t2so\so-g14\t2\ave18v\simpletest\simpletest.cpp(39): warning C4302: 'type cast': truncation from 'UT_ARGUMENT' to 'UCHAR'
-c:\users\megri\desktop\t2so\so-g14\t2\ave18v\simpletest\simpletest.cpp(64): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
+﻿  stdafx.cpp
+  SimpleTest.cpp
+c:\users\gabriel\documents\so-g14\t2\ave18v\simpletest\simpletest.cpp(39): warning C4302: 'type cast': truncation from 'UT_ARGUMENT' to 'UCHAR'
+c:\users\gabriel\documents\so-g14\t2\ave18v\simpletest\simpletest.cpp(64): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdlib.h(1334): note: see declaration of 'itoa'
-  SimpleTest.vcxproj -> C:\Users\megri\Desktop\T2SO\SO-G14\T2\AVE18v\Debug\SimpleTest.exe
+  SimpleTest.vcxproj -> C:\Users\Gabriel\Documents\SO-G14\T2\AVE18v\Debug\SimpleTest.exe
