@@ -35,9 +35,10 @@ VOID Test_BlockedThreads(UT_ARGUMENT Argument) {
 		printf("Thread_0 is currently in state : %i\n", UtThreadState(thread_0));
 		printf("Thread_1 is currently in state : %i\n", UtThreadState(thread_1));
 		printf("Thread_2 is currently in state : %i\n", UtThreadState(thread_2));
-		printf(":: Thread %c - JOINING THREAD A :: \n", Char);
-		//UtJoin(thread_A);
-		printf(":: Thread %c - END :: \n", Char);
+		printf(":: Thread %c - JOINING THREAD 1 :: \n", Char);
+		HANDLE handle[1] = { thread_2 };
+		UtMultJoin(handle,1);
+		printf("\n\n\n Thread %c - END :: \n\n\n", Char);
 }
 
 VOID Test_Yield(UT_ARGUMENT Argument) {
