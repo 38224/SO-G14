@@ -207,6 +207,7 @@ VOID UtExit() {
 		Thread->JoinCounter -= 1;
 		if (Thread->JoinCounter == 0) {
 			InsertTailList(&ReadyQueue, &Thread->Link);
+			Thread->State = Ready;
 		}
 		free(waitBlock);
 	}
