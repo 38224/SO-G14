@@ -102,6 +102,9 @@ int UtThreadState(HANDLE ThreadHandle);
 UTHREAD_API
 BOOL UtMultJoin(HANDLE handle[], int size);
 
+UTHREAD_API
+VOID UtTerminateThread(HANDLE tHandle);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

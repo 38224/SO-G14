@@ -212,7 +212,7 @@ VOID UtExit() {
 		}
 		free(waitBlock);
 	}
- 
+	
 	InternalExit(RunningThread, ExtractNextReadyThread());
 	_ASSERTE(!"Supposed to be here!");
 }
@@ -312,6 +312,15 @@ BOOL UtMultJoin(HANDLE handle[], int size) {
 	RunningThread->State = Blocked;
 	UtDeactivate();
 	return TRUE;
+}
+
+VOID UtTerminateThread(HANDLE tHandle) {
+	if (tHandle == UtSelf()) {
+		UtExit();
+	}
+	else {
+		((PUTHREAD)tHandle)->ThreadContext->RetAddr = UtExit;
+	}
 }
 
 //

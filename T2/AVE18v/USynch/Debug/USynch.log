@@ -1,1 +1,6 @@
-﻿
+﻿  Event.c
+  Mutex.c
+  Semaphore.c
+  Generating Code...
+     Creating library C:\Users\Gabriel\Documents\SO-G14\T2\AVE18v\Debug\USynch.lib and object C:\Users\Gabriel\Documents\SO-G14\T2\AVE18v\Debug\USynch.exp
+  USynch.vcxproj -> C:\Users\Gabriel\Documents\SO-G14\T2\AVE18v\Debug\USynch.dll
