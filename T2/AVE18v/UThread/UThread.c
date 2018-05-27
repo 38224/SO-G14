@@ -127,6 +127,7 @@ VOID Schedule() {
 	NextThread = ExtractNextReadyThread();
 	NextThread->State = Running;
 	ContextSwitch(RunningThread, NextThread);
+	RunningThread->State = Running;
 }
 
 ///////////////////////////////
