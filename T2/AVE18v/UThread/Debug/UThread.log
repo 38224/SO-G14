@@ -1,7 +1,1 @@
-﻿  UThread.c
-c:\users\gabriel\documents\so-g14\t2\ave18v\uthread\uthread.c(276): warning C4133: '!=': incompatible types - from 'PUTHREAD' to '_LIST_ENTRY *'
-c:\users\gabriel\documents\so-g14\t2\ave18v\uthread\uthread.c(279): warning C4133: '=': incompatible types - from '_LIST_ENTRY *' to 'PUTHREAD'
-c:\users\gabriel\documents\so-g14\t2\ave18v\uthread\uthread.c(268): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'HANDLE'
-c:\users\gabriel\documents\so-g14\t2\ave18v\uthread\uthread.c(272): warning C4133: 'initializing': incompatible types - from '_LIST_ENTRY *' to 'PUTHREAD'
-c:\users\gabriel\documents\so-g14\t2\ave18v\uthread\uthread.c(278): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'HANDLE'
-  UThread.vcxproj -> C:\Users\Gabriel\Documents\SO-G14\T2\AVE18v\Debug\UThread.dll
+﻿
